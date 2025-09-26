@@ -1,47 +1,43 @@
 import gdown
 import subprocess
-import time
 import os
 
-# 🎬 Your Google Drive video ID
-drive_id = "1sAWgzklhHHurtLsH1ocZGja3EwCVTC4N"
-local_file = "video.mp4"
+# 🎬 Google Drive IDs (yahan apne links ke IDs daalo)
+video_drive_id = "1-MJuCDwkcLmUuTTHVuRKqKVY1fCb2qm6"
+audio_drive_id = "1ilOvOl76gwquhWU-Xz78rcTOwLPdnizY"
 
-# 🔑 Your YouTube stream key (hardcoded as requested)
-stream_key = "gvzz-gfg3-0pa8-2v2t-9u9h"
+# Local file names
+video_file = "video.mp4"
+audio_file = "audio.mp3"
+
+# 🔑 Your YouTube stream key
+stream_key = "2c4f-5sy5-q7tx-cz4t-0c8r"
 stream_url = f"rtmp://a.rtmp.youtube.com/live2/{stream_key}"
 
-def download_video():
-    if os.path.exists(local_file):
-        print("✅ Video already exists, skipping download.")
+def download_file(drive_id, output):
+    if os.path.exists(output):
+        print(f"✅ {output} already exists, skipping download.")
         return
+    url = f"https://drive.google.com/uc?id={drive_id}"
+    print(f"📥 Downloading {output}...")
+    gdown.download(url, output, quiet=False)
 
-    print("📥 Starting download from Google Drive...")
-    try:
-        gdown.download(id=drive_id, output=local_file, quiet=False)
-        print("✅ Download complete.")
-    except Exception as e:
-        print(f"🚨 Download failed: {e}")
-        time.sleep(5)
-        exit(1)
+def start_stream():
+    download_file(video_drive_id, video_file)
+    download_file(audio_drive_id, audio_file)
 
-def stream_loop():
-    while True:
-        print("🎥 Starting stream...")
-        try:
-            subprocess.run([
-                "ffmpeg",
-                "-re",
-                "-i", local_file,
-                "-c:v", "copy",
-                "-c:a", "aac",
-                "-f", "flv",
-                stream_url
-            ], check=True)
-        except subprocess.CalledProcessError:
-            print("⚠️ FFmpeg crashed. Retrying in 5 sec...")
-            time.sleep(5)
+    print("🚀 Starting stream...")
+    command = [
+        "ffmpeg", "-re",
+        "-i", video_file,
+        "-i", audio_file,
+        "-c:v", "copy",            # video ko re-encode nahi karega
+        "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
+        "-shortest",               # chhoti wali file ke khatam hote hi stream rukega
+        "-f", "flv", stream_url
+    ]
+
+    subprocess.run(command)
 
 if __name__ == "__main__":
-    download_video()
-    stream_loop()
+    start_stream()
