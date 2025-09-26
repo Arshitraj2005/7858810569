@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Start Flask app for UptimeRobot ping support
-python3 main.py &
+echo "🚀 Starting YouTube Live Stream with separate Video + Audio..."
 
-# Then start the stream script in parallel
+# Run the stream script
 python3 stream.py
