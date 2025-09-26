@@ -4,7 +4,7 @@ import os
 
 # 🎬 Google Drive IDs
 video_drive_id = "1-MJuCDwkcLmUuTTHVuRKqKVY1fCb2qm6"
-audio_drive_id = "1fO8xVEIKALIZAMMYcFEMQK4Rk0cFtBp6"
+audio_drive_id = "1ilOvOl76gwquhWU-Xz78rcTOwLPdnizY"
 
 # Local file names
 video_file = "video.mp4"
@@ -26,13 +26,14 @@ def start_stream():
     download_file(video_drive_id, video_file)
     download_file(audio_drive_id, audio_file)
 
-    print("🚀 Starting stream...")
+    print("🚀 Starting stream with video + audio...")
     command = [
         "ffmpeg", "-re",
         "-i", video_file,
         "-i", audio_file,
-        "-c:v", "copy",
+        "-c:v", "libx264", "-preset", "veryfast", "-tune", "zerolatency",
         "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
+        "-map", "0:v:0", "-map", "1:a:0",  # video from 1st input, audio from 2nd
         "-shortest",
         "-f", "flv", stream_url
     ]
