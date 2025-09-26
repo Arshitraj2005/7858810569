@@ -4,7 +4,7 @@ import os
 
 # 🎬 Google Drive IDs
 video_drive_id = "1-MJuCDwkcLmUuTTHVuRKqKVY1fCb2qm6"
-audio_drive_id = "1ilOvOl76gwquhWU-Xz78rcTOwLPdnizY"
+audio_drive_id = "1fO8xVEIKALIZAMMYcFEMQK4Rk0cFtBp6"
 
 # Local file names
 video_file = "video.mp4"
