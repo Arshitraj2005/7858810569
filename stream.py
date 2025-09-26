@@ -2,7 +2,7 @@ import gdown
 import subprocess
 import os
 
-# 🎬 Google Drive IDs (yahan apne links ke IDs daalo)
+# 🎬 Google Drive IDs
 video_drive_id = "1-MJuCDwkcLmUuTTHVuRKqKVY1fCb2qm6"
 audio_drive_id = "1ilOvOl76gwquhWU-Xz78rcTOwLPdnizY"
 
@@ -31,9 +31,9 @@ def start_stream():
         "ffmpeg", "-re",
         "-i", video_file,
         "-i", audio_file,
-        "-c:v", "copy",            # video ko re-encode nahi karega
+        "-c:v", "copy",
         "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
-        "-shortest",               # chhoti wali file ke khatam hote hi stream rukega
+        "-shortest",
         "-f", "flv", stream_url
     ]
 
