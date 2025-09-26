@@ -1,6 +1,8 @@
 #!/bin/bash
+echo "🚀 Starting YouTube Live Stream service..."
 
-echo "🚀 Starting YouTube Live Stream with separate Video + Audio..."
+# Run Flask (background me)
+python3 main.py &
 
-# Run the stream script
+# Run Stream
 python3 stream.py
