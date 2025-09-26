@@ -31,9 +31,11 @@ def start_stream():
         "ffmpeg", "-re",
         "-i", video_file,
         "-i", audio_file,
-        "-c:v", "libx264", "-preset", "veryfast", "-tune", "zerolatency",
-        "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
-        "-map", "0:v:0", "-map", "1:a:0",  # video from 1st input, audio from 2nd
+        "-c:v", "libx264", "-preset", "veryfast",
+        "-b:v", "2500k", "-maxrate", "2500k", "-bufsize", "5000k",
+        "-c:a", "aac", "-b:a", "128k", "-ar", "44100",
+        "-map", "0:v:0", "-map", "1:a:0",
+        "-g", "50", "-keyint_min", "50",   # Keyframe every 2s (for 25fps)
         "-shortest",
         "-f", "flv", stream_url
     ]
