@@ -1,19 +1,10 @@
-import os
-from flask import Flask
-from threading import Thread
-
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "✅ Stream service is running!"
-
-def run():
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
-
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
+import threading
+from stream import download_files, start_stream
 
 if __name__ == "__main__":
-    keep_alive()
+    print("🔄 Downloading required files...")
+    download_files()
+
+    print("🚀 Starting Stream Thread...")
+    stream_thread = threading.Thread(target=start_stream)
+    stream_thread.start()
