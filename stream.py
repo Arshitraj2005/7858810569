@@ -4,7 +4,7 @@ import subprocess
 # ==== CONFIG ====
 VIDEO_ID = "1-MJuCDwkcLmUuTTHVuRKqKVY1fCb2qm6"   # Google Drive Video ID
 AUDIO_ID = "1SqqVbApLnkj8rSnmfYBH7Yva90MxhPwa"   # Google Drive Audio ID
-STREAM_KEY = "cec7-xy4y-9y7e-xk7t-4qxa"          # YouTube Stream Key
+STREAM_KEY = "2c4f-5sy5-q7tx-cz4t-0c8r"          # YouTube Stream Key
 
 VIDEO_FILE = "video.mp4"
 AUDIO_FILE = "audio.mp3"
