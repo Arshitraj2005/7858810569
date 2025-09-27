@@ -1,65 +1,36 @@
 import os
 import subprocess
-import threading
-from flask import Flask
 
-# === CONFIG ===
-STREAM_URL = f"rtmp://a.rtmp.youtube.com/live2/{os.getenv('STREAM_KEY')}"  
-VIDEO_SOURCE = os.getenv("VIDEO_SOURCE", "video.mp4")  # Local file ya URL
+# ==== CONFIG ====
+VIDEO_ID = "1-MJuCDwkcLmUuTTHVuRKqKVY1fCb2qm6"   # Google Drive Video ID
+AUDIO_ID = "1SqqVbApLnkj8rSnmfYBH7Yva90MxhPwa"   # Google Drive Audio ID
+STREAM_KEY = "cec7-xy4y-9y7e-xk7t-4qxa"          # YouTube Stream Key
 
-app = Flask(__name__)
-process = None
+VIDEO_FILE = "video.mp4"
+AUDIO_FILE = "audio.mp3"
+
+def download_files():
+    if not os.path.exists(VIDEO_FILE):
+        print("📥 Downloading video...")
+        os.system(f"gdown --id {VIDEO_ID} -O {VIDEO_FILE}")
+
+    if not os.path.exists(AUDIO_FILE):
+        print("📥 Downloading audio...")
+        os.system(f"gdown --id {AUDIO_ID} -O {AUDIO_FILE}")
 
 def start_stream():
-    global process
-    if process is not None:
-        return "Stream already running!"
+    print("🚀 Starting YouTube Live Stream...")
 
-    # ✅ Optimized FFmpeg command for YouTube
     command = [
         "ffmpeg",
-        "-re",  # real-time mode
-        "-stream_loop", "-1",  # loop video forever
-        "-i", VIDEO_SOURCE,  # input file/url
-        "-c:v", "libx264",  # video codec
-        "-preset", "veryfast",  # encoding speed
-        "-b:v", "2500k",  # video bitrate (2.5 Mbps stable for Render free)
-        "-maxrate", "2500k",
-        "-bufsize", "5000k",
+        "-stream_loop", "-1", "-re", "-i", VIDEO_FILE,   # video loop
+        "-stream_loop", "-1", "-re", "-i", AUDIO_FILE,   # audio loop
+        "-c:v", "libx264", "-preset", "veryfast", "-b:v", "2500k",
+        "-c:a", "aac", "-b:a", "128k", "-ar", "44100",
         "-pix_fmt", "yuv420p",
-        "-g", "50",  # keyframe interval (2s at 25fps)
-        "-c:a", "aac",  # audio codec
-        "-b:a", "128k",  # audio bitrate
-        "-ar", "44100",  # audio sample rate
-        "-f", "flv", STREAM_URL
+        "-shortest",  # dono sath me rahe
+        "-g", "60", "-keyint_min", "60",  # YouTube keyframe fix
+        "-f", "flv", f"rtmp://a.rtmp.youtube.com/live2/{STREAM_KEY}"
     ]
 
-    process = subprocess.Popen(command)
-    return "Stream started!"
-
-def stop_stream():
-    global process
-    if process:
-        process.terminate()
-        process = None
-        return "Stream stopped!"
-    return "No stream running!"
-
-@app.route("/")
-def home():
-    return "✅ YouTube Livestream Bot Running!"
-
-@app.route("/start")
-def start():
-    return start_stream()
-
-@app.route("/stop")
-def stop():
-    return stop_stream()
-
-@app.route("/status")
-def status():
-    return "Running ✅" if process else "Stopped ❌"
-
-if __name__ == "__main__":
-    threading.Thread(target=lambda: app.run(host="0.0.0.0", port=5000)).start()
+    subprocess.run(command)
