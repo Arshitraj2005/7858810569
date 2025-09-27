@@ -1,2 +1,3 @@
-flask
+gdown
+ffmpeg-python
 
